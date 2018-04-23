@@ -2,9 +2,9 @@
     "1234_submarine": {
         "ip": "",
         "port": 3000,
-        "schedule": "",
+        "schedule": "1 March",
         "filePath": "./files/1234_submarine",
-        "msgKey": "",
+        "msgKey": "lol",
         "clientKey": "1234"
     },
 
