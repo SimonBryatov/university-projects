@@ -1,0 +1,19 @@
+{
+    "1234_submarine": {
+        "ip": "",
+        "port": 3000,
+        "schedule": "",
+        "filePath": "./files/1234_submarine",
+        "msgKey": "",
+        "clientKey": "1234"
+    },
+
+    "1235_submarine": {
+        "ip": "",
+        "port": 3000,
+        "schedule": "",
+        "filePath": "./files/1235_submarine",
+        "msgKey": "",
+        "clientKey": ""
+    }
+}

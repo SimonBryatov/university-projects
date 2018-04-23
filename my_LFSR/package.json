@@ -1,0 +1,21 @@
+{
+  "name": "my_lfsr",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lfsr.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "incomplete-gamma": "^1.0.1",
+    "lfsr": "0.0.3",
+    "lodash": "^4.17.5",
+    "math-erfc": "^1.0.0",
+    "mathjs": "^4.1.2"
+  },
+  "devDependencies": {
+    "nist-randomness-test-suite": "0.0.7"
+  }
+}
