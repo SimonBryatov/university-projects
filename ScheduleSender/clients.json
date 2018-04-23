@@ -3,7 +3,7 @@
         "ip": "",
         "port": 3000,
         "schedule": "1 March",
-        "filePath": "./files/1234_submarine",
+        "filePath": "./files/1234_submarine.txt",
         "msgKey": "lol",
         "clientKey": "1234"
     },

@@ -9,6 +9,9 @@ const app = Express();
 const server = require('http').createServer(app);  
 const io = require('socket.io')(server);
 const cors = require("cors");
+const fs = require("fs")
+const aes = require("./handlers/aes")
+const chalk = require("chalk")
 var bufStr = "fashdfihdsjfhdjofhjfashjf"
 
 app.use(cors());
@@ -23,39 +26,36 @@ const updateSchedule = require("./handlers/updateSchedule")
 const auth = require("./handlers/auth");
 io.on('connection', function (socket) {
   socket.on('requestFile', function (data) {
-    let ledger = jsonfile.readFileSync(file);
-    let clientEntry = ledger[data.id]
-    if (clientEntry) {
-      if (clientEntry.clientKey === data.clientKey) {
-      console.log("Authorized client with id: " + data.id);
-      let encryptedSchedule = updateSchedule(clientEntry);
-      io.to(socket.id).emit('recieveFile', encryptedSchedule) //Buffer.from(bufStr, 'utf8'))
-      } else {
-        console.log("Declined connection with id: " + data.id);
-        io.to(socket.id).emit('Error', "Error! Not Authorized")
-      };
-    }
+    auth(io, data, socket.id, "requestFile", (clientEntry) => {
+      let file = fs.readFileSync(clientEntry.filePath).toString();
+      let sendBuffer = Buffer.from(aes.encrypt(file, clientEntry.msgKey), 'utf-8');
+      console.log("Sending file to client " + data.id);
+      io.to(socket.id).emit('recieveFile', sendBuffer)
+    })
   });
 
   socket.on("requestScheduleUpdate", (data) => {
-
+    auth(io, data, socket.id, "requestScheduleUpdate", (clientEntry) => {
+      let encryptedSchedule = updateSchedule(clientEntry);
+      console.log("Sending new schedule to client " + data.id);
+      io.to(socket.id).emit('recieveSchedule', encryptedSchedule)
+    })
   })
   socket.on("SOS_lost_key", () => {console.log(`Client ${socket.id} has desynchronized :(`)})
 });
 
 
+var j = schedule.scheduleJob('*/10 * * * * *', function(){
+  io.emit("Error", "Никита не пидор")
+});
 
 
 
-
-
-
-
-
-// var j = schedule.scheduleJob('*/5 * * * * *', function(){
 //   toggleNetwork();
 //   setTimeout(() => toggleNetwork(), 1000)
-// });
+
+
+
 // toggleNetwork();
 
 // const Koa = require('koa');

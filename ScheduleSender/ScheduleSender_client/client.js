@@ -5,6 +5,7 @@ var jsonfile = require('jsonfile')
 var file = './clientConfig.json'
 var CryptoJS = require("crypto-js");
 var io = require('socket.io-client');
+const chalk = require("chalk")
 const aes = require("./handlers/aes")
  
 let clientConfig = jsonfile.readFileSync(file);
@@ -33,11 +34,25 @@ var socket = io.connect(address);
     
   socket.on("recieveFile", (data) => {
     console.log("Recieved file. Trying to decrypt...");
+    let file = JSON.parse(aes.decrypt(data.toString('utf-8'), clientConfig.msgKey));
+    if (file) {
+      console.log(chalk.green("Success!"));
+      console.log(chalk.magenta(file));
+      fs.writeFileSync('./recievedFiles/file.txt', file)
+      socket.emit("requestScheduleUpdate",  { id: clientConfig.id, clientKey: clientConfig.clientKey })
+    } else {
+      console.log("Fail.");
+      console.log("Key is desynchronized! Sending SOS! We're coming home")
+      socket.emit("SOS_lost_key")
+    }
+  })
+
+  socket.on("recieveSchedule", (data) => {
+    console.log("Recieved schedule. Trying to decrypt...");
     let scheduleString = aes.decrypt(data, clientConfig.msgKey)
     if (scheduleString) {
-    console.log("Success!");
-    console.log(scheduleString);
-    socket.emit("requestScheduleUpdate",  { id: clientConfig.id, clientKey: clientConfig.clientKey })
+    console.log(chalk.green("Success!"));
+    console.log(chalk.magenta(scheduleString));
     } else {
       console.log("Fail.");
       console.log("Key is desynchronized! Sending SOS! We're coming home")
