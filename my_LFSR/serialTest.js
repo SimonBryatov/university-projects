@@ -62,7 +62,7 @@ let igamc = require("incomplete-gamma");
  nablaSquared = psi1 - 2*psi0
  console.log(nabla, nablaSquared)
  let p1 = igamc.upper(1, nabla/2)
- let p2 = igamc.upper(0.5, nablaSquared/2)
+ let p2 = igamc.upper(0, nablaSquared/2)
  console.log(p1, p2)
  console.log((p1 && p2) > alpha);
  
