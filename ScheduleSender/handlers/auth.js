@@ -1,7 +1,7 @@
 var jsonfile = require('jsonfile')
 let path = require("path")
 const chalk = require("chalk")
-var file = './clients.json'
+var file = './configs/clients.json'
         module.exports = (io, s_data, s_id, eventName, onSuccess) => {
             let ledger = jsonfile.readFileSync(file);
             let clientEntry = ledger[s_data.id]

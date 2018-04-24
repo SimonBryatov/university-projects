@@ -4,8 +4,8 @@
     "port": 3000,
     "schedule": "1 March",
     "filePath": "./files/1234_submarine.txt",
-    "msgKey": "lol",
-    "clientKey": "1234"
+    "msgKey": "47f05d367b0c32e438fb63e6cf4a5f35c2aa2f90dc7543f8a41a0f95ce8a40a313ab5cf36134a2068c4c969cb50db776",
+    "clientKey": "1e237288d39d815abc653befcab0eb70966558a5bbc10a24739c116ed2f615be31e81670f02af48fe3cf5112f0fa03e8"
   },
   "1235_submarine": {
     "ip": "",
@@ -16,6 +16,6 @@
     "clientKey": ""
   },
   "1236_submarine": {
-    "dsad": "3fsdfsdsf3123"
+    "dsad": "123"
   }
 }

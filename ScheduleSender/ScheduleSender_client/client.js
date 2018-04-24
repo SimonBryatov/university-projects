@@ -7,7 +7,12 @@ var CryptoJS = require("crypto-js");
 var io = require('socket.io-client');
 const chalk = require("chalk")
 const aes = require("./handlers/aes")
- 
+const SHA384 = require("crypto-js/sha384");
+
+// let f = jsonfile.readFileSync("./clientConfig.json");
+// f.schedule = 324234234
+//jsonfile.writeFileSync("./clientConfig.json", f, {spaces: 2, EOL: '\r\n'})
+
 let clientConfig = jsonfile.readFileSync(file);
 
 // let config =  {
@@ -53,6 +58,9 @@ var socket = io.connect(address);
     if (scheduleString) {
     console.log(chalk.green("Success!"));
     console.log(chalk.magenta(scheduleString));
+    clientConfig.clientKey = SHA384(clientConfig.clientKey).toString()
+    clientConfig.msgKey = SHA384(clientConfig.msgKey).toString()
+    jsonfile.writeFileSync("./clientConfig.json", clientConfig, {spaces: 2, EOL: '\r\n'})
     } else {
       console.log("Fail.");
       console.log("Key is desynchronized! Sending SOS! We're coming home")
