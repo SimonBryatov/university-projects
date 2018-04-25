@@ -63,8 +63,8 @@ let igamc = require("incomplete-gamma");
  console.log(nabla, nablaSquared)
  let p1 = igamc.upper(1, nabla/2)
  let p2 = igamc.upper(0, nablaSquared/2)
- console.log(p1, p2)
- console.log((p1 && p2) > alpha);
+ console.log(p1, p2, alpha)
+ return(p1 > alpha);
  
 
     

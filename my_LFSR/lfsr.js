@@ -1,7 +1,7 @@
 LFSR = require('lfsr');
  
 let bitLength = 5
-let initialState = parseInt('10010', 2) // seed1 
+let initialState = parseInt('10010', '10000') // seed1 
 let lfsr1 = new LFSR(bitLength, initialState);
 
     initialState = parseInt('11111', 2) // seed2 
