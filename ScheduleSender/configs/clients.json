@@ -4,8 +4,8 @@
     "port": 3000,
     "schedule": "1 March",
     "filePath": "./files/1234_submarine.txt",
-    "msgKey": "7090524657b4884c20b5f34c6718a61f46e5e01ee7fa395e2b19a37729d7563a432a5c6874250fc1017df54f71bfbd27",
-    "clientKey": "7090524657b4884c20b5f34c6718a61f46e5e01ee7fa395e2b19a37729d7563a432a5c6874250fc1017df54f71bfbd27"
+    "msgKey": "636c1e68c3fc599d3dd32553676e6a452a722c149a7d90d623532a5382b2d1604fed164b519b9934c4bc09ff8a8bbe94",
+    "clientKey": "2c67034c1fbca7bc11d8f9e4add1f1ad95312a381fb37af583e78f2057b6ee302ed110bf9e46650fe1e345959b741e2d"
   },
   "1235_submarine": {
     "ip": "",

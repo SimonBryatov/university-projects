@@ -37,35 +37,49 @@ var socket = io.connect(address);
   socket.on("connect", () => {console.log(`Connected to server ${address} via Socket io`)})
   socket.emit('requestFile', { id: clientConfig.id, clientKey: clientConfig.clientKey }) 
     
-  socket.on("recieveFile", (data) => {
-    console.log("Recieved file. Trying to decrypt...");
-    let file = JSON.parse(aes.decrypt(data.toString('utf-8'), clientConfig.msgKey));
-    if (file) {
+  socket.on("recieveData", (data, cb) => {
+    console.log("Recieved data. Comparing key hashes...");
+    console.log(data[0])
+    console.log(SHA384(clientConfig.msgKey).toString())
+    if (data[0] !=  SHA384(clientConfig.msgKey).toString()) {
+      console.log("Alert!");
+      console.log("Key has been compromised/desynchronyzed! Sending SOS message to HQ! We're coming home")
+      socket.emit("SOS_lost_key")
+    } else {
+    let file = JSON.parse(aes.decrypt(data[1].toString('utf-8'), clientConfig.msgKey));
+    let scheduleString = aes.decrypt(data[2], clientConfig.msgKey);
+    if (file && scheduleString) {
       console.log(chalk.green("Success!"));
       console.log(chalk.magenta(file));
+      console.log(chalk.blue(scheduleString));
+      clientConfig.clientKey = SHA384(clientConfig.clientKey).toString()
+      clientConfig.msgKey = SHA384(SHA384(clientConfig.msgKey)).toString()
       fs.writeFileSync('./recievedFiles/file.txt', file)
-      socket.emit("requestScheduleUpdate",  { id: clientConfig.id, clientKey: clientConfig.clientKey })
-    } else {
-      console.log("Fail.");
-      console.log("Key is desynchronized! Sending SOS! We're coming home")
-      socket.emit("SOS_lost_key")
-    }
+    jsonfile.writeFileSync("./clientConfig.json", clientConfig, {spaces: 2, EOL: '\r\n'})
+   
+      // socket.emit("requestScheduleUpdate",  { id: clientConfig.id, clientKey: clientConfig.clientKey })
+    } 
+  }
   })
 
   socket.on("recieveSchedule", (data) => {
-    console.log("Recieved schedule. Trying to decrypt...");
+    console.log("Recieved schedule and hash. Comparing hashes...");
+    
+    if (data[1] !=  SHA384(clientConfig.msgKey).toString()) {
+      console.log("Alert!");
+      console.log("Key has been compromised!")
+    } else {
     let scheduleString = aes.decrypt(data, clientConfig.msgKey)
     if (scheduleString) {
     console.log(chalk.green("Success!"));
     console.log(chalk.magenta(scheduleString));
-    clientConfig.clientKey = SHA384(clientConfig.clientKey).toString()
-    clientConfig.msgKey = SHA384(clientConfig.msgKey).toString()
-    jsonfile.writeFileSync("./clientConfig.json", clientConfig, {spaces: 2, EOL: '\r\n'})
+    
     } else {
       console.log("Fail.");
       console.log("Key is desynchronized! Sending SOS! We're coming home")
       socket.emit("SOS_lost_key")
     }
+  }
   })
 
   socket.on("Error", (msg) => {

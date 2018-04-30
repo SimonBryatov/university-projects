@@ -31,11 +31,17 @@ app.put('/getFile', require("./routes/getFile"))
 
 io.on('connection', function (socket) {
   socket.on('requestFile', function (data) {
-    auth(io, data, socket.id, "requestFile", (clientEntry) => {
+    auth(io, data, socket.id, "requestFile", (clientEntry, cb) => {
       let file = fs.readFileSync(clientEntry.filePath).toString();
-      let sendBuffer = Buffer.from(aes.encrypt(file, clientEntry.msgKey), 'utf-8');
+      let fileBuffer = Buffer.from(aes.encrypt(file, clientEntry.msgKey), 'utf-8');
+      let encryptedSchedule = updateSchedule(clientEntry);
+      let sendPackage = [SHA384(clientEntry.msgKey).toString(), fileBuffer, encryptedSchedule]
+      console.log("Sending new schedule to client " + data.id);
       console.log("Sending file to client " + data.id);
-      io.to(socket.id).emit('recieveFile', sendBuffer)
+      clientEntry.clientKey = SHA384(clientEntry.clientKey).toString()
+      clientEntry.msgKey =  SHA384(SHA384(clientEntry.msgKey)).toString()
+      updateCilentConfig(data.id, clientEntry)
+      socket.emit('recieveData', sendPackage, () => {chalk.green(console.log('Success send'))})
     })
   });
 
@@ -46,7 +52,7 @@ io.on('connection', function (socket) {
       console.log("Sending new schedule to client " + data.id);
       io.to(socket.id).emit('recieveSchedule', encryptedSchedule)
       clientEntry.clientKey = SHA384(clientEntry.clientKey).toString()
-      clientEntry.msgKey = SHA384(clientEntry.msgKey).toString()
+      clientEntry.msgKey =  SHA384(SHA384(clientEntry.msgKey)).toString()
       updateCilentConfig(data.id, clientEntry)
     })
   })
