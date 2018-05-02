@@ -7,7 +7,9 @@ var file = './configs/clients.json'
             let clientEntry = ledger[s_data.id]
             if (clientEntry) {
                 if (clientEntry.clientKey === s_data.clientKey) {
+                console.log(chalk.keyword("blue")("============================================================================"))
                 console.log(chalk.black.bgCyan(eventName) + chalk.yellow(' event') + ": Authorized client with id: " + s_data.id);
+                console.log(chalk.keyword("blue")("============================================================================"))
                 onSuccess(clientEntry);
                 } else {
                   console.log("Declined connection with id: " + s_id);

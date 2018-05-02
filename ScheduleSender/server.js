@@ -3,11 +3,11 @@ networkOnline = false;
 var schedule = require('node-schedule');
 const toggleNetwork = require("./handlers/toggleN.js")
 
-//Defi
+//Init Defininitos
 const Express = require("express")
 const app = Express();
 const server = require('http').createServer(app);  
-const io = require('socket.io')(server);
+io = require('socket.io')(server);
 const cors = require("cors");
 const fs = require("fs")
 const aes = require("./handlers/aes")
@@ -19,8 +19,8 @@ var file = './configs/clients.json'
 const updateSchedule = require("./handlers/updateSchedule")
 const updateCilentConfig = require("./handlers/updateClientConfig")
 const auth = require("./handlers/auth");
-
-// console.log(SHA384("2132").toString())
+const moment = require("moment")
+const scheduleManager = require("./handlers/scheduleManager")
 
 app.use(cors());
 
@@ -30,39 +30,36 @@ app.put('/getFile', require("./routes/getFile"))
 
 
 io.on('connection', function (socket) {
-  socket.on('requestFile', function (data) {
+  socket.on('requestData', function (data) {
     auth(io, data, socket.id, "requestFile", (clientEntry, cb) => {
       let file = fs.readFileSync(clientEntry.filePath).toString();
       let fileBuffer = Buffer.from(aes.encrypt(file, clientEntry.msgKey), 'utf-8');
       let encryptedSchedule = updateSchedule(clientEntry);
       let sendPackage = [SHA384(clientEntry.msgKey).toString(), fileBuffer, encryptedSchedule]
-      console.log("Sending new schedule to client " + data.id);
-      console.log("Sending file to client " + data.id);
+      console.log("Sending file and new schedule to client with id: " + data.id);
       clientEntry.clientKey = SHA384(clientEntry.clientKey).toString()
       clientEntry.msgKey =  SHA384(SHA384(clientEntry.msgKey)).toString()
       updateCilentConfig(data.id, clientEntry)
-      socket.emit('recieveData', sendPackage, () => {chalk.green(console.log('Success send'))})
+      socket.emit('recieveData', sendPackage, () => {
+        console.log(chalk.magenta('Success send'))
+        console.log(chalk.keyword("blue")("============================================================================"))
+      })
     })
   });
-
-  
-  socket.on("requestScheduleUpdate", (data) => {
-    auth(io, data, socket.id, "requestScheduleUpdate", (clientEntry) => {
-      let encryptedSchedule = updateSchedule(clientEntry);
-      console.log("Sending new schedule to client " + data.id);
-      io.to(socket.id).emit('recieveSchedule', encryptedSchedule)
-      clientEntry.clientKey = SHA384(clientEntry.clientKey).toString()
-      clientEntry.msgKey =  SHA384(SHA384(clientEntry.msgKey)).toString()
-      updateCilentConfig(data.id, clientEntry)
-    })
-  })
   socket.on("SOS_lost_key", () => {console.log(`Client ${socket.id} has desynchronized :(`)})
 });
 
-
-var j = schedule.scheduleJob('*/15 * * * * *', function(){
-  // io.emit("Error", "Никита молодец")
-});
+date = Date.now()
+let sm = new scheduleManager();
+sm.init();
+// console.log(date)
+// date = new Date(date + 4000)
+// // io.emit("Error", "Никита молодец")
+// console.log(date.getTime())
+// var j = schedule.scheduleJob(date, function(){
+//   console.log("Job started")
+//    io.emit("Error", "Никита молодец")
+// });
 
 
 
