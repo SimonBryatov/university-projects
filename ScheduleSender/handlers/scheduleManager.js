@@ -1,27 +1,32 @@
-var jsonfile = require('jsonfile')
-var file = './configs/clients.json'
 var schedule = require('node-schedule');
+let cm = require("./clientManager")
 function scheduleManager() {
     this.jobs = {}
     this.init = () => {
-        ledger = jsonfile.readFileSync(file);
-        let userSchedule = ledger["1234_submarine"].schedule
-        let userConnectionDate = new Date(...userSchedule)
-        console.log(userConnectionDate.getTime(), Date.now())
-        this.jobs["1234_submarine"] = schedule.scheduleJob(userConnectionDate, function(){
+        let clientConfig = cm.getClientConfig("1234_submarine")
+        let s = new Date(...clientConfig.schedule)
+        console.log(s.getTime(), Date.now())
+        this.jobs["1234_submarine"] = schedule.scheduleJob(new Date(Date.now() + 3000), () => {
             console.log("Job started")
             io.emit("Error", "Online")
+            // this.newJobForId("1234_submarine");
           });
     }
-    this.newJobForId = (id) => {
-        ledger = jsonfile.readFileSync(file);
-        let delta = ledger["1234_submarine"].scheduleDelta
-        let newSchedule = new Date(Date.now() + delta);
-        this.jobs[id] = schedule.scheduleJob(userConnectionDate, function(){
+    this.newJobForId = function(id) {
+        
+        let clientConfig = cm.getClientConfig(id)
+        let delta = clientConfig.scheduleDelta;
+        let newS = new Date(Date.now() + delta);
+        console.log(newS.getTime(), Date.now())
+        clientConfig.schedule = [newS.getFullYear(), newS.getMonth(), newS.getDay(), newS.getHours(), newS.getMinutes(), newS.getSeconds()]
+        console.log(clientConfig.schedule)
+        cm.setClientConfig(id, clientConfig)
+        this.jobs[id] = schedule.scheduleJob(newS, () => {
             console.log("Job started")
             io.emit("Error", "Online")
+            this.newJobForId(id);
           });
-        return newSchedule
+        return newS
     }
     return this
 }

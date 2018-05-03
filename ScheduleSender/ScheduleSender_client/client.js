@@ -9,23 +9,24 @@ const chalk = require("chalk")
 const aes = require("./handlers/aes")
 const SHA384 = require("crypto-js/sha384");
 var schedule = require('node-schedule');
-
+let sm = new require("./handlers/scheduleManager")();
+let cm = require("./handlers/configManager");
 
 let clientConfig = jsonfile.readFileSync(file);
 
 
 let address = `http://127.0.0.1:3000`
 var socket = io.connect(address);
+// sm.newJob();
 
-
-date = new Date(2018, 4, 2, 18, 50, 33)
-console.log(date.value)
+date = new Date()
+//console.log(date.value)
 var j = schedule.scheduleJob(date, function(){
   // socket.emit('requestData', { id: clientConfig.id, clientKey: clientConfig.clientKey }) 
 });
 
   socket.on("connect", () => {console.log(`Connected to server ${address} via Socket io`)})
-  // socket.emit('requestData', { id: clientConfig.id, clientKey: clientConfig.clientKey }) 
+   socket.emit('requestData', { id: clientConfig.id, clientKey: clientConfig.clientKey }) 
     
   socket.on("recieveData", (data, cb) => {
     console.log(chalk.keyword("blue")("============================================================================"))
@@ -38,16 +39,20 @@ var j = schedule.scheduleJob(date, function(){
       socket.emit("SOS_lost_key")
     } else {
     let file = JSON.parse(aes.decrypt(data[1].toString('utf-8'), clientConfig.msgKey));
-    let scheduleString = aes.decrypt(data[2], clientConfig.msgKey);
-    if (file && scheduleString) {
+    let newS = new Date(Number(aes.decrypt(data[2], clientConfig.msgKey)));
+    console.log(newS.getTime())
+    newS = [newS.getFullYear(), newS.getMonth(), newS.getDay(), newS.getHours(), newS.getMinutes(), newS.getSeconds()]
+    if (file && newS) {
       console.log(chalk.green("Success!"));
       console.log(chalk.magenta(file));
-      console.log(chalk.blue(scheduleString));
+      console.log(chalk.blue(newS));
       console.log(chalk.keyword("blue")("============================================================================"))
       clientConfig.clientKey = SHA384(clientConfig.clientKey).toString()
       clientConfig.msgKey = SHA384(SHA384(clientConfig.msgKey)).toString()
+      clientConfig.schedule = newS
       fs.writeFileSync('./recievedFiles/file.txt', file)
-    jsonfile.writeFileSync("./clientConfig.json", clientConfig, {spaces: 2, EOL: '\r\n'})
+      cm.setConfig(clientConfig);
+      // sm.newJob();
       cb();
     } 
   }

@@ -1,6 +1,13 @@
 {
   "id": "1234_submarine",
-  "msgKey": "7dc6e7ceccffe251e99ad3f0bb69d81ea13a8998ab391840046b886a89d9c42c27c836a33c057d81a5c47fcefffc5c94",
-  "clientKey": "e45b6d11e9ac634f8506532621dfe3deca9d76f3b6c35b65cdca8dc73762f11a7d783e5b7f18a3be5f89e934fe3afad8",
-  "schedule": 324234234
+  "msgKey": "e947e56eca2dca5a43b70edc64d70620ffbda6bad9c5bc2dd38affd0adaf20aa09dabcd0e427c4163e3951c0ff3fd006",
+  "clientKey": "032fecbb2c17b79fdb15ecee50c6be0463d29b6b152c3b41d0a6dc57faaecc10b2d22dac444277c970883bc8598bb1ac",
+  "schedule": [
+    2018,
+    4,
+    5,
+    14,
+    42,
+    57
+  ]
 }

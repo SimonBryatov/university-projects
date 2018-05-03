@@ -91,12 +91,14 @@ let periodCounter = (initial_state, parameters) => {
   return period
 }
 
-console.log(periodCounter('1101', '1001'));
-let g1 = new Generator('1101', '1001');
-let seq = (g1.getSeq(50));
-console.log(seq)
+console.log(periodCounter('10001', '10011'));
+let g1 = new Generator('11011', '11011');
+// let seq = (g1.getSeq(50));
+// for (var i = 0; i < 1000; i++) {
+//   console.log(g1.getSeq(5))
+//   }
 
-g1 = new Generator("1101", '1001');
+g1 = new Generator("10011", '10101');
 seq = (g1.getSeq(1000000));
 testSuite = require("nist-randomness-test-suite");
 let alpha = 0.01;
@@ -105,13 +107,18 @@ let tests = new testSuite(alpha);
 var fs = require('fs');
 var file = fs.readFileSync("./data.e", "utf8");
 let e = file.replace(/[^a-z0-9]/gi, "");
- console.log("Non Overlapping Template Matching Test for e: ", tests.nonOverlappingTemplateMatchingTest(e))
- console.log("Non Overlapping Template Matching Test for user sequence: ", tests.nonOverlappingTemplateMatchingTest(seq))
- console.log("=========================")
- console.log("Binary Matrix Rank Test for e: ", tests.binaryMatrixRankTest(e))
- console.log("Binary Matrix Rank Test for user sequence: ", tests.binaryMatrixRankTest(seq))
- console.log("=========================");
+console.log(e)
+//  console.log("Non Overlapping Template Matching Test for e: ", tests.nonOverlappingTemplateMatchingTest(e))
+//  console.log("Non Overlapping Template Matching Test for user sequence: ", tests.nonOverlappingTemplateMatchingTest(seq))
+//  console.log("=========================")
+//  console.log("Binary Matrix Rank Test for e: ", tests.binaryMatrixRankTest(e))
+//  console.log("Binary Matrix Rank Test for user sequence: ", tests.binaryMatrixRankTest(seq))
+//  console.log("=========================");
 
-st = require("./serialTest");
-console.log("The Serial Test for e: ", st(e, 0.01))
-console.log("The Serial Test for user sequence: ", st(seq, 0.01))
+ st = require("./serialTest");
+ console.log("The Serial Test for e: ", st(e, 0.01))
+//  console.log("The Serial Test for user sequence: ", st(seq, 0.01))
+// let g2 = new Generator("100010101010101010101001010101000110", "100010101010101010101001001101000110");
+// let s2 = g2.getSeq(1000);
+// console.log(s2);
+// console.log(tests.binaryMatrixRankTest(""))

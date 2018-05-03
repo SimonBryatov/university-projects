@@ -21,6 +21,7 @@ const updateCilentConfig = require("./handlers/updateClientConfig")
 const auth = require("./handlers/auth");
 const moment = require("moment")
 const scheduleManager = require("./handlers/scheduleManager")
+const cm = require("./handlers/clientManager")
 
 app.use(cors());
 
@@ -28,18 +29,22 @@ server.listen(3000, () => {console.log("Server is online\nListening on port " + 
 
 app.put('/getFile', require("./routes/getFile"))
 
+console.log(new Date(...cm.getClientConfig("1234_submarine").schedule).getTime())
 
 io.on('connection', function (socket) {
   socket.on('requestData', function (data) {
     auth(io, data, socket.id, "requestFile", (clientEntry, cb) => {
       let file = fs.readFileSync(clientEntry.filePath).toString();
       let fileBuffer = Buffer.from(aes.encrypt(file, clientEntry.msgKey), 'utf-8');
-      let encryptedSchedule = updateSchedule(clientEntry);
+      let encryptedSchedule = aes.encrypt(new Date(...cm.getClientConfig("1234_submarine").schedule).getTime(), clientEntry.msgKey)
+      // console.log(new Date(...cm.getClientConfig("1234_submarine").schedule).getTime())
       let sendPackage = [SHA384(clientEntry.msgKey).toString(), fileBuffer, encryptedSchedule]
       console.log("Sending file and new schedule to client with id: " + data.id);
+      // console.log()
       clientEntry.clientKey = SHA384(clientEntry.clientKey).toString()
       clientEntry.msgKey =  SHA384(SHA384(clientEntry.msgKey)).toString()
       updateCilentConfig(data.id, clientEntry)
+      sm.newJobForId(data.id);
       socket.emit('recieveData', sendPackage, () => {
         console.log(chalk.magenta('Success send'))
         console.log(chalk.keyword("blue")("============================================================================"))
