@@ -16,7 +16,7 @@ let clientConfig = jsonfile.readFileSync(file);
 
 
 let address = `http://127.0.0.1:3000`
-var socket = io.connect(address);
+socket = io.connect(address);
 // sm.newJob();
 
 date = new Date()
@@ -40,8 +40,8 @@ var j = schedule.scheduleJob(date, function(){
     } else {
     let file = JSON.parse(aes.decrypt(data[1].toString('utf-8'), clientConfig.msgKey));
     let newS = new Date(Number(aes.decrypt(data[2], clientConfig.msgKey)));
-    console.log(newS.getTime())
-    newS = [newS.getFullYear(), newS.getMonth(), newS.getDay(), newS.getHours(), newS.getMinutes(), newS.getSeconds()]
+    console.log(newS.getDate())
+    newS = [newS.getFullYear(), newS.getMonth(), newS.getDate(), newS.getHours(), newS.getMinutes(), newS.getSeconds()]
     if (file && newS) {
       console.log(chalk.green("Success!"));
       console.log(chalk.magenta(file));
@@ -52,7 +52,7 @@ var j = schedule.scheduleJob(date, function(){
       clientConfig.schedule = newS
       fs.writeFileSync('./recievedFiles/file.txt', file)
       cm.setConfig(clientConfig);
-      // sm.newJob();
+      sm.newJob();
       cb();
     } 
   }

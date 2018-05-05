@@ -37,14 +37,14 @@ io.on('connection', function (socket) {
       let file = fs.readFileSync(clientEntry.filePath).toString();
       let fileBuffer = Buffer.from(aes.encrypt(file, clientEntry.msgKey), 'utf-8');
       let encryptedSchedule = aes.encrypt(new Date(...cm.getClientConfig("1234_submarine").schedule).getTime(), clientEntry.msgKey)
-      // console.log(new Date(...cm.getClientConfig("1234_submarine").schedule).getTime())
+       console.log(new Date(...cm.getClientConfig("1234_submarine").schedule).getTime())
       let sendPackage = [SHA384(clientEntry.msgKey).toString(), fileBuffer, encryptedSchedule]
       console.log("Sending file and new schedule to client with id: " + data.id);
       // console.log()
       clientEntry.clientKey = SHA384(clientEntry.clientKey).toString()
       clientEntry.msgKey =  SHA384(SHA384(clientEntry.msgKey)).toString()
       updateCilentConfig(data.id, clientEntry)
-      sm.newJobForId(data.id);
+      // sm.newJobForId(data.id);
       socket.emit('recieveData', sendPackage, () => {
         console.log(chalk.magenta('Success send'))
         console.log(chalk.keyword("blue")("============================================================================"))
@@ -52,6 +52,7 @@ io.on('connection', function (socket) {
     })
   });
   socket.on("SOS_lost_key", () => {console.log(`Client ${socket.id} has desynchronized :(`)})
+  socket.on("Hello", () => {console.log("Hello")})
 });
 
 date = Date.now()

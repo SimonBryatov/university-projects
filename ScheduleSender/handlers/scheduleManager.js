@@ -6,10 +6,8 @@ function scheduleManager() {
         let clientConfig = cm.getClientConfig("1234_submarine")
         let s = new Date(...clientConfig.schedule)
         console.log(s.getTime(), Date.now())
-        this.jobs["1234_submarine"] = schedule.scheduleJob(new Date(Date.now() + 3000), () => {
-            console.log("Job started")
-            io.emit("Error", "Online")
-            // this.newJobForId("1234_submarine");
+        this.jobs["1234_submarine"] = schedule.scheduleJob(new Date(Date.now() + 2000), () => {
+            this.newJobForId("1234_submarine");
           });
     }
     this.newJobForId = function(id) {
@@ -18,9 +16,10 @@ function scheduleManager() {
         let delta = clientConfig.scheduleDelta;
         let newS = new Date(Date.now() + delta);
         console.log(newS.getTime(), Date.now())
-        clientConfig.schedule = [newS.getFullYear(), newS.getMonth(), newS.getDay(), newS.getHours(), newS.getMinutes(), newS.getSeconds()]
-        console.log(clientConfig.schedule)
+        clientConfig.schedule = [newS.getFullYear(), newS.getMonth(), newS.getDate(), newS.getHours(), newS.getMinutes(), newS.getSeconds()]
+        console.log(clientConfig.schedule, newS.getDate())
         cm.setClientConfig(id, clientConfig)
+        // this.jobs[id].cancel()
         this.jobs[id] = schedule.scheduleJob(newS, () => {
             console.log("Job started")
             io.emit("Error", "Online")
