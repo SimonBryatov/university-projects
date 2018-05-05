@@ -19,7 +19,8 @@ var fs = require('fs');
 var file = fs.readFileSync("./primes.txt", "utf8");
 let primes = file.split(/[^0-9]/gi).filter(Boolean);
 ////////////////////////
-let num = 2333
+let n = Big(3213312321321321321312321312321213213123123231).mod(2).valueOf()
+console.log(n)
 ////////////////////////
 let k = 10
 let res = [];

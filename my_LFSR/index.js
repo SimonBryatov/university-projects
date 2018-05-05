@@ -105,7 +105,7 @@ let alpha = 0.01;
 let tests = new testSuite(alpha);
 
 var fs = require('fs');
-var file = fs.readFileSync("./data.e", "utf8");
+var file = fs.readFileSync("./e", "utf8");
 let e = file.replace(/[^a-z0-9]/gi, "");
 console.log(e)
 //  console.log("Non Overlapping Template Matching Test for e: ", tests.nonOverlappingTemplateMatchingTest(e))
