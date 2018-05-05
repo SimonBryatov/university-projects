@@ -12,8 +12,9 @@ var schedule = require('node-schedule');
 let sm = new require("./handlers/scheduleManager")();
 let cm = require("./handlers/configManager");
 
-let clientConfig = jsonfile.readFileSync(file);
-
+let initConfig = jsonfile.readFileSync(file);
+clientKey = initConfig.clientKey
+msgKey = initConfig.msgKey
 
 let address = `http://127.0.0.1:3000`
 socket = io.connect(address);
@@ -26,20 +27,23 @@ var j = schedule.scheduleJob(date, function(){
 });
 
   socket.on("connect", () => {console.log(`Connected to server ${address} via Socket io`)})
-   socket.emit('requestData', { id: clientConfig.id, clientKey: clientConfig.clientKey }) 
+  //  socket.emit('requestData', { id: initConfig.id, clientKey: clientKey }) 
+  sm.newJob(Date.now() + 100)
     
   socket.on("recieveData", (data, cb) => {
+    console.log(msgKey)
+    let config = cm.getConfig();
     console.log(chalk.keyword("blue")("============================================================================"))
     console.log("Recieved data. Comparing key hashes...");
     console.log(data[0])
-    console.log(SHA384(clientConfig.msgKey).toString())
-    if (data[0] !=  SHA384(clientConfig.msgKey).toString()) {
+    console.log(SHA384(msgKey).toString())
+    if (data[0] !=  SHA384(msgKey).toString()) {
       console.log("Alert!");
       console.log("Key has been compromised/desynchronyzed! Sending SOS message to HQ! We're coming home")
       socket.emit("SOS_lost_key")
     } else {
-    let file = JSON.parse(aes.decrypt(data[1].toString('utf-8'), clientConfig.msgKey));
-    let newS = new Date(Number(aes.decrypt(data[2], clientConfig.msgKey)));
+    let file = JSON.parse(aes.decrypt(data[1].toString('utf-8'), msgKey));
+    let newS = new Date(Number(aes.decrypt(data[2], msgKey)));
     console.log(newS.getDate())
     newS = [newS.getFullYear(), newS.getMonth(), newS.getDate(), newS.getHours(), newS.getMinutes(), newS.getSeconds()]
     if (file && newS) {
@@ -47,11 +51,9 @@ var j = schedule.scheduleJob(date, function(){
       console.log(chalk.magenta(file));
       console.log(chalk.blue(newS));
       console.log(chalk.keyword("blue")("============================================================================"))
-      clientConfig.clientKey = SHA384(clientConfig.clientKey).toString()
-      clientConfig.msgKey = SHA384(SHA384(clientConfig.msgKey)).toString()
-      clientConfig.schedule = newS
+      config.schedule = newS
+      cm.setConfig(config)
       fs.writeFileSync('./recievedFiles/file.txt', file)
-      cm.setConfig(clientConfig);
       sm.newJob();
       cb();
     } 

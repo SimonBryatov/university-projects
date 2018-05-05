@@ -11,8 +11,8 @@ io = require('socket.io')(server);
 const cors = require("cors");
 const fs = require("fs")
 const aes = require("./handlers/aes")
-const chalk = require("chalk")
-const SHA384 = require("crypto-js/sha384");
+const SHA384 = require("crypto-js/sha384")
+chalk = require("chalk")
 var bufStr = "fashdfihdsjfhdjofhjfashjf"
 var jsonfile = require('jsonfile')
 var file = './configs/clients.json'
@@ -35,19 +35,18 @@ io.on('connection', function (socket) {
   socket.on('requestData', function (data) {
     auth(io, data, socket.id, "requestFile", (clientEntry, cb) => {
       let file = fs.readFileSync(clientEntry.filePath).toString();
-      let fileBuffer = Buffer.from(aes.encrypt(file, clientEntry.msgKey), 'utf-8');
-      let encryptedSchedule = aes.encrypt(new Date(...cm.getClientConfig("1234_submarine").schedule).getTime(), clientEntry.msgKey)
-       console.log(new Date(...cm.getClientConfig("1234_submarine").schedule).getTime())
-      let sendPackage = [SHA384(clientEntry.msgKey).toString(), fileBuffer, encryptedSchedule]
+      let msgKey = clientEntry.msgKey;
+      let fileBuffer = Buffer.from(aes.encrypt(file, msgKey), 'utf-8');
+      let encryptedSchedule = aes.encrypt(new Date(...cm.updateCilentSchedule(data.id)).getTime(), msgKey)
+      // console.log(new Date(...cm.getClientConfig("1234_submarine").schedule).getTime())
+      let sendPackage = [SHA384(msgKey).toString(), fileBuffer, encryptedSchedule]
       console.log("Sending file and new schedule to client with id: " + data.id);
       // console.log()
-      clientEntry.clientKey = SHA384(clientEntry.clientKey).toString()
-      clientEntry.msgKey =  SHA384(SHA384(clientEntry.msgKey)).toString()
-      updateCilentConfig(data.id, clientEntry)
       // sm.newJobForId(data.id);
-      socket.emit('recieveData', sendPackage, () => {
-        console.log(chalk.magenta('Success send'))
-        console.log(chalk.keyword("blue")("============================================================================"))
+        socket.emit('recieveData', sendPackage, () => {
+        sm.newJobForId(data.id)
+        console.log(chalk.green('Success send'))
+        console.log(chalk.keyword("blue")("============================================================================ \n"))
       })
     })
   });
