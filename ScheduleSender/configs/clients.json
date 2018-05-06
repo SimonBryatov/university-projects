@@ -6,25 +6,30 @@
       2018,
       4,
       6,
-      0,
-      41,
-      8
+      16,
+      13,
+      10
     ],
     "nextSchedule": "123",
-    "scheduleDelta": 1000,
+    "scheduleDelta": 2000,
     "filePath": "./files/1234_submarine.txt",
-    "msgKey": "aa28f9edf6704e4e37968eb75e41e4359112c46882e9acea7a538c1e3ef24cd70ef4a9dd17c8f778cd7ea58dcd38893f",
-    "clientKey": "9ac0c30d50000a436417426f6ab23aa099c2b37b5beb9aac5690d4f6ed1632042e72dc5270303cbc4e4581bb72e33c8b"
+    "msgKey": "c67be7a6d2ae6f70fd4c223024d6dd97ca9033224e66790ca2bdcf275b3796575915123747176b474131a8e694163f61",
+    "clientKey": "8c592b65bb709570c57f8f61c869520de35c49b7df154db512871ad8cdf00ce97b64ffce2550b3f94f036cada85e892b"
   },
   "1235_submarine": {
     "ip": "",
     "port": 3000,
-    "schedule": "",
+    "schedule": [
+      2018,
+      4,
+      6,
+      16,
+      13,
+      10
+    ],
+    "scheduleDelta": 3000,
     "filePath": "./files/1235_submarine",
-    "msgKey": "",
-    "clientKey": ""
-  },
-  "1236_submarine": {
-    "dsad": "123"
+    "msgKey": "eed379ed1d1d659bd127cec548371801c22fcba729e6e4a98bc5bf5e629dae33313632ed727a49c484e1b48891079e20",
+    "clientKey": "aea85e32d23c2f0048636a8c973a5294312791d0bcaf53d0e28dcaf07040d91440cf223a5412ceca8a935e703b5a6659"
   }
 }

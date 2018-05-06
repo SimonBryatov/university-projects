@@ -37,7 +37,7 @@ io.on('connection', function (socket) {
       let file = fs.readFileSync(clientEntry.filePath).toString();
       let msgKey = clientEntry.msgKey;
       let fileBuffer = Buffer.from(aes.encrypt(file, msgKey), 'utf-8');
-      let encryptedSchedule = aes.encrypt(new Date(...cm.updateCilentSchedule(data.id)).getTime(), msgKey)
+      let encryptedSchedule = aes.encrypt(new Date(...cm.getClientConfig(data.id).schedule).getTime(), msgKey)
       // console.log(new Date(...cm.getClientConfig("1234_submarine").schedule).getTime())
       let sendPackage = [SHA384(msgKey).toString(), fileBuffer, encryptedSchedule]
       console.log("Sending file and new schedule to client with id: " + data.id);

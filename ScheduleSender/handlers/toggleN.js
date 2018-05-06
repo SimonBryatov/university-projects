@@ -1,6 +1,7 @@
 module.exports = 
- toggleNetwork = () => {
+ toggleNetwork = (networkOnline) => {
     if (networkOnline) {
+        let startTime = Date.now();
         console.log("Going Offline...");
         var child = require('child_process').exec('wmic path win32_networkadapter where PhysicalAdapter=True call disable', function (error, stdout, stderr) {
             if (error !== null) {
@@ -9,12 +10,15 @@ module.exports =
                 console.log(stdout);
                 console.log("All network adapters are Offline...");
                 networkOnline = false;
+                console.log((Date.now() - startTime))
             }
             // Validate stdout / stderr to see if service is already running
             // perhaps.
+            //ipconfig/release
+            //ipconfig/renew
         });
     } else {
-
+        let startTime = Date.now();
         console.log("Going Online...");
         var child = require('child_process').exec('wmic path win32_networkadapter where PhysicalAdapter=True call enable', function (error, stdout, stderr) {
             if (error !== null) {
@@ -23,6 +27,7 @@ module.exports =
                 console.log(stdout);
                 console.log("All network adapters are Online");
                 networkOnline = true;
+                console.log((Date.now() - startTime))
             }
             // Validate stdout / stderr to see if service is already running
             // perhaps.
