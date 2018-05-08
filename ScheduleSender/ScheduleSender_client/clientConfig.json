@@ -1,13 +1,13 @@
 {
-  "id": "1234_submarine",
-  "msgKey": "86fb7ce3d5d61af60d0c1953c80b1207928d1c722fac8fdd67eace0f458c99626da877a5caa890e088651285d1186650",
-  "clientKey": "43cc55c45ed0cee1e0d3b7bbac1df06d34bb98b3314051c4e7500bb328c4c29ecc96668493d7d242fcac54ec3c16ed0d",
+  "id": "1235_submarine",
+    "msgKey": "1",
+  "clientKey": "1",
   "schedule": [
     2018,
     4,
-    6,
-    0,
-    41,
-    8
+    8,
+    11,
+    42,
+    22
   ]
 }

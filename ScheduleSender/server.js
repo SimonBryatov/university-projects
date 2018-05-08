@@ -33,9 +33,12 @@ console.log(new Date(...cm.getClientConfig("1234_submarine").schedule).getTime()
 
 io.on('connection', function (socket) {
   socket.on('requestData', function (data) {
-    auth(io, data, socket.id, "requestFile", (clientEntry, cb) => {
-      let file = fs.readFileSync(clientEntry.filePath).toString();
-      let msgKey = clientEntry.msgKey;
+    auth(io, data, socket.id, "requestFile", (clientConfig, cb) => {
+      let msgKey = clientConfig.msgKey;
+      clientConfig.clientKey = SHA384(clientConfig.clientKey).toString()
+      clientConfig.msgKey =  SHA384(SHA384(clientConfig.msgKey)).toString()
+      cm.setClientConfig(data.id, clientConfig);
+      let file = fs.readFileSync(clientConfig.filePath).toString();
       let fileBuffer = Buffer.from(aes.encrypt(file, msgKey), 'utf-8');
       let encryptedSchedule = aes.encrypt(new Date(...cm.getClientConfig(data.id).schedule).getTime(), msgKey)
       // console.log(new Date(...cm.getClientConfig("1234_submarine").schedule).getTime())
@@ -44,7 +47,7 @@ io.on('connection', function (socket) {
       // console.log()
       // sm.newJobForId(data.id);
         socket.emit('recieveData', sendPackage, () => {
-        sm.newJobForId(data.id)
+        // sm.newJobForId(data.id)
         console.log(chalk.green('Success send'))
         console.log(chalk.keyword("blue")("============================================================================ \n"))
       })

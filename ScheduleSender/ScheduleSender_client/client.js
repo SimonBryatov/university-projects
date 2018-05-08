@@ -5,7 +5,7 @@ var jsonfile = require('jsonfile')
 var file = './clientConfig.json'
 var CryptoJS = require("crypto-js");
 var io = require('socket.io-client');
-const chalk = require("chalk")
+chalk = require("chalk")
 const aes = require("./handlers/aes")
 const SHA384 = require("crypto-js/sha384");
 var schedule = require('node-schedule');
@@ -16,7 +16,7 @@ let initConfig = jsonfile.readFileSync(file);
 clientKey = initConfig.clientKey
 msgKey = initConfig.msgKey
 
-let address = `http://127.0.0.1:3000`
+let address = `http://169.254.157.84:3000`
 socket = io.connect(address);
 // sm.newJob();
 
@@ -28,7 +28,7 @@ var j = schedule.scheduleJob(date, function(){
 
   socket.on("connect", () => {console.log(`Connected to server ${address} via Socket io`)})
   //  socket.emit('requestData', { id: initConfig.id, clientKey: clientKey }) 
-  sm.newJob(Date.now() + 100)
+  sm.newJob(Date.now() + 300)
     
   socket.on("recieveData", (data, cb) => {
     console.log(msgKey)
