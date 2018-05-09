@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chalk": "^2.4.1",
     "incomplete-gamma": "^1.0.1",
     "lfsr": "0.0.3",
     "lodash": "^4.17.5",

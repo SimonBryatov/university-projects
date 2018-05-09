@@ -1,12 +1,10 @@
 LFSR = require('lfsr');
  
 let bitLength = 5
-let initialState = parseInt('10010', '10000') // seed1 
+let initialState = parseInt('10000') // seed1 
 let lfsr1 = new LFSR(bitLength, initialState);
 
-for (var i = 0; i < 1000; i++) {
-console.log(lfsr1.seqString(5))
-}
+console.log(lfsr1.seqString(31), lfsr1.seqString(31))
 //     initialState = parseInt('11111', 2) // seed2 
 // let lfsr2 = new LFSR(bitLength, initialState);
 

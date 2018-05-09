@@ -1,19 +1,16 @@
+chalk = require("chalk")
 function* lfsr(initial_seq, parameters) {
     //let prev_seq = initial_seq;
     let period = 1;
     let curr_seq = initial_seq.split(""), newBit = 0;
     curr_seq = curr_seq.map((el) => parseInt(el));
     //let outputBit = 
-    parameters = parameters.split("");
-    parameters = parameters.map((el) => parseInt(el));
+    // parameters = parameters.map((el) => parseInt(el));
     while (true) {
         // console.log(prev_seq)
         newBit = 0;
-        parameters.forEach((el, ind) => {
-            if (parseInt(el) == 1) {
-                // console.log(ind)
-                newBit += parseInt(curr_seq[ind])
-            }
+        parameters.forEach((el) => {
+                newBit += parseInt(curr_seq[el])
             })
         newBit = newBit % 2;
         // console.log(curr_seq);
@@ -75,51 +72,77 @@ let periodCounter = (initial_state, parameters) => {
   //  console.log(sub1, sub2)
   //  if (sub1 = sub2) found = true;
   // }
-  let period = initial_state.length
-  let f_state = initial_state;
-  gen.getSeq(period);
-  let output = gen.getSeq(period);
-  next_state = output.split("").reverse().join("");
-  
+  let length = initial_state.length
+  let period = 1
+  gen.getSeq(length);
+  let f_state = gen.getSeq(length)
+  let next_state = gen.getSeq(length)
+  let tailFlag = 0
   while (f_state != next_state) {
-    //console.log(next_state)
-    period++
-    output = output.slice(1, output.length);
-    output += gen.getSeq(1);
-    next_state = output.split("").reverse().join("");
+    period++;
+    // console.log(period)
+    if (period > (Math.pow(2, initial_state.length) - 1)) {
+      tailFlag = 1
+      break
+    }
+    next_state = gen.getSeq(length)
+  } 
+  if (tailFlag) {
+    console.log("tailed")
+    gen = new Generator(initial_state, parameters);
+    gen.getSeq(length + 1);
+    f_state = gen.getSeq(length);
+    next_state = gen.getSeq(length);
+    period = 1;
+    while (f_state != next_state) {
+      period++;
+      next_state = gen.getSeq(length)
+    } 
+    return period;
   }
   return period
 }
 
-console.log(periodCounter('10001', '10011'));
-let g1 = new Generator('11011', '11011');
-// let seq = (g1.getSeq(50));
-// for (var i = 0; i < 1000; i++) {
-//   console.log(g1.getSeq(5))
-//   }
+let random = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+};
 
-g1 = new Generator("10011", '10101');
+let getStr = (l) => {
+  let res = ""
+  for (var i = 0; i < l; i++) {
+    res += random(0, 1)
+  }
+  return res
+}
+
+let l = 19;
+let state = getStr(l);
+console.log(`Init state: `, state)
+let param = [13, 16, 17,18]
+console.log(chalk.yellow(`Period of [${param}] generator: `), periodCounter(state, param)); 
+g1 = new Generator(state, param);
+g1.getSeq(state.length);
 seq = (g1.getSeq(1000000));
-testSuite = require("nist-randomness-test-suite");
 let alpha = 0.01;
+console.log(chalk.green(`Running tests with alpha = ${alpha} ...`))
+// console.log(seq.slice(0, 131070) == seq.slice(131071, 131071 * 2 - 1))
+testSuite = require("nist-randomness-test-suite");
 let tests = new testSuite(alpha);
-
+console.log("Exponent file read...")
 var fs = require('fs');
 var file = fs.readFileSync("./e", "utf8");
 let e = file.replace(/[^a-z0-9]/gi, "");
-console.log(e.length)
-//  console.log("Non Overlapping Template Matching Test for e: ", tests.nonOverlappingTemplateMatchingTest(e))
-//  console.log("Non Overlapping Template Matching Test for user sequence: ", tests.nonOverlappingTemplateMatchingTest(seq))
-//  console.log("=========================")
- console.log("Runs Test for e: ", tests.runsTest(e))
- console.log("Runs Test for user sequence: ", tests.runsTest("1100100100001111110110101010001000100001011010001100001000110100110001001100011001100010100010111000"))
- console.log("=========================");
+st = require("./serialTest");
+e = e.slice(0, 1000000)
+// console.log(st(e, 0.01))
+console.log(chalk.blue("========================="));
+console.log(chalk.yellow("Frequency Test for e: "), tests.frequencyTest(e))
+ console.log(chalk.yellow("Frequency Test for user sequence: "), tests.frequencyTest(seq))
+ console.log(chalk.blue("========================="));
+console.log(chalk.yellow("Runs Test for e: "), tests.runsTest(e))
+console.log(chalk.yellow("Runs Test for user sequence: "), tests.runsTest(seq))
+console.log(chalk.blue("========================="));
+ console.log(chalk.yellow("The Serial Test for e: "), st(e, 0.01))
+console.log(chalk.yellow("The Serial Test for user sequence: "), st(seq, 0.01))
 
- st = require("./serialTest");
- console.log("The Serial Test for e: ", st(e, 0.01))
-console.log("The Serial Test for user sequence: ", st(seq, 0.01))
-// let g2 = new Generator("100010101010101010101001010101000110", "100010101010101010101001001101000110");
-// let s2 = g2.getSeq(1000);
-// console.log(s2);
-// console.log(tests.binaryMatrixRankTest(""))
 
