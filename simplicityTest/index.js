@@ -43,7 +43,7 @@ while (!found) {
 let num = getBigRandomString(25)
 console.log("Inspecting number " + num)
 //console.log(n)
-n = Big(num)
+n = Big("93113")
 ////////////////////////
 let k = 10
 let res = [];

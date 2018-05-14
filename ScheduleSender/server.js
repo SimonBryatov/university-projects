@@ -41,13 +41,9 @@ io.on('connection', function (socket) {
       let file = fs.readFileSync(clientConfig.filePath).toString();
       let fileBuffer = Buffer.from(aes.encrypt(file, msgKey), 'utf-8');
       let encryptedSchedule = aes.encrypt(new Date(...cm.getClientConfig(data.id).schedule).getTime(), msgKey)
-      // console.log(new Date(...cm.getClientConfig("1234_submarine").schedule).getTime())
       let sendPackage = [SHA384(msgKey).toString(), fileBuffer, encryptedSchedule]
       console.log("Sending file and new schedule to client with id: " + data.id);
-      // console.log()
-      // sm.newJobForId(data.id);
         socket.emit('recieveData', sendPackage, () => {
-        // sm.newJobForId(data.id)
         console.log(chalk.green('Success send'))
         console.log(chalk.keyword("blue")("============================================================================ \n"))
       })
@@ -60,30 +56,3 @@ io.on('connection', function (socket) {
 date = Date.now()
 let sm = new scheduleManager();
 sm.init();
-// console.log(date)
-// date = new Date(date + 4000)
-// // io.emit("Error", "Никита молодец")
-// console.log(date.getTime())
-// var j = schedule.scheduleJob(date, function(){
-//   console.log("Job started")
-//    io.emit("Error", "Никита молодец")
-// });
-
-
-
-//   toggleNetwork();
-//   setTimeout(() => toggleNetwork(), 1000)
-
-
-
-// toggleNetwork();
-
-// const Koa = require('koa');
-//var Router = require('koa-router');
-//var cors = require('koa2-cors');
-//const send = require('koa-send');
-// var enforceHttps = require('koa-sslify');
-// const router = new Router();
-// app
-//   .use(router.routes())
-//   .use(router.allowedMethods());

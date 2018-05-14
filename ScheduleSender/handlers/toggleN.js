@@ -12,10 +12,6 @@ module.exports =
                 networkOnline = false;
                 console.log((Date.now() - startTime))
             }
-            // Validate stdout / stderr to see if service is already running
-            // perhaps.
-            //ipconfig/release
-            //ipconfig/renew
         });
     } else {
         let startTime = Date.now();
@@ -29,8 +25,6 @@ module.exports =
                 networkOnline = true;
                 console.log((Date.now() - startTime))
             }
-            // Validate stdout / stderr to see if service is already running
-            // perhaps.
         });
 
     }

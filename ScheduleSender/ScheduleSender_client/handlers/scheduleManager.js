@@ -1,7 +1,7 @@
 var schedule = require('node-schedule');
 let cm = require("./configManager")
 const SHA384 = require("crypto-js/sha384");
-const tF = require("./toggleFirewall")
+const tN = require("./toggleN")
 function scheduleManager() {
     this.sendJob = null
     this.networkJob = null
@@ -13,10 +13,10 @@ function scheduleManager() {
         let newDate = new Date(...cm.getConfig().schedule);
         console.log(`New date`, new Date(initTest || newDate.getTime()).getTime())
         this.networkJob = schedule.scheduleJob(new Date(initTest - 300 || newDate.getTime() - 300), () => {
-            // tF(1);
-            // setTimeout(() => {
-            // tF();
-            // }, 1000)
+            tN(1);
+            setTimeout(() => {
+            tN();
+            }, 1000)
         }) 
         this.sendJob = schedule.scheduleJob(new Date(initTest || newDate.getTime()), () => {
             console.log("Job started")

@@ -1,6 +1,6 @@
 var schedule = require('node-schedule');
 let cm = require("./clientManager");
-let tF = require("./toggleFirewall")
+let tN = require("./toggleN")
 
 function scheduleManager() {
     this.jobs = {}
@@ -9,7 +9,7 @@ function scheduleManager() {
         // let s = new Date(...clientConfig.schedule)
         //console.log(s.getTime(), Date.now())
         // this.jobs[id] = schedule.scheduleJob(new Date(Date.now() + 1000), () => {
-        tF();
+        tN();
         setTimeout(() => {
             for (id in configs) {
                 console.log(id)
@@ -23,14 +23,12 @@ function scheduleManager() {
 
 
             let newS = cm.updateClientSchedule(id)
-            // tF(1)
+            // tN(1)
             // setTimeout(() => {
-            //     tF();
+            //     tN();
             // }, 1000)
             //handleNetwork
 
-            // this.jobs[id].cancel()
-            // console.log(id)
             // console.log(new Date(new Date(...newS).getTime()) - 200)
             this.jobs[id] = schedule.scheduleJob(new Date(new Date(...newS).getTime()) - 300, () => {
                 // console.log("Job started")

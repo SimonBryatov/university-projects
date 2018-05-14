@@ -21,12 +21,8 @@ module.exports = {
         let clientConfig = this.getClientConfig(id)
         let delta = clientConfig.scheduleDelta;
         let newS = new Date(Date.now() + delta + 1000);
-        //console.log(id)
-        //console.log(newS.getTime(), Date.now())
         clientConfig.schedule = [newS.getFullYear(), newS.getMonth(), newS.getDate(), newS.getHours(), newS.getMinutes(), newS.getSeconds()]
         console.log(chalk.magenta(`Generated schedule: [${clientConfig.schedule}] for ${id}`))
-        // clientConfig.clientKey = SHA384(clientConfig.clientKey).toString()
-        // clientConfig.msgKey =  SHA384(SHA384(clientConfig.msgKey)).toString()
         this.setClientConfig(id, clientConfig)
         return clientConfig.schedule
     },
